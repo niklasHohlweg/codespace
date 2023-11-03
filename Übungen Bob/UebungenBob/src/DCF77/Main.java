@@ -1,5 +1,6 @@
 package DCF77;
 
+import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
@@ -9,38 +10,61 @@ public class Main {
         Scanner myScanner = new Scanner(System.in);
         String signal = myScanner.nextLine();
 
-        String timezone = (signal.charAt(17) == 0 && signal.charAt(18) == 1) ? "MEZ" : "MESZ";
+        String timezone = (signal.charAt(17) == '0' && signal.charAt(18) == '1') ? "MEZ" : "MESZ";
         String min = fixNull(calc(signal.charAt(21), signal.charAt(22), signal.charAt(23), signal.charAt(24), signal.charAt(25), signal.charAt(26), signal.charAt(27), '0'));
         String hour = fixNull(calc(signal.charAt(29), signal.charAt(30), signal.charAt(31), signal.charAt(32), signal.charAt(33), signal.charAt(34), '0', '0'));
-        String day = fixNull(calc(signal.charAt(36), signal.charAt(37), signal.charAt(38), signal.charAt(39), signal.charAt(40), signal.charAt(41), '0', '0'));
-        String weekday = switch (calc(signal.charAt(42), signal.charAt(43), signal.charAt(44), '0', '0', '0', '0', '0')) {
-            case 1 -> "Montag";
-            case 2 -> "Dienstag";
-            case 3 -> "Mittwoch";
-            case 4 -> "Donnerstag";
-            case 5 -> "Freitag";
-            case 6 -> "Samstag";
-            case 7 -> "Sonntag";
-            default -> "";
-        };
-        String month = switch (calc(signal.charAt(45), signal.charAt(46), signal.charAt(47), signal.charAt(48), '0', '0', '0', '0')) {
-            case 1 -> "Januar";
-            case 2 -> "Februar";
-            case 3 -> "März";
-            case 4 -> "April";
-            case 5 -> "Mai";
-            case 6 -> "Juni";
-            case 7 -> "Juli";
-            case 8 -> "August";
-            case 9 -> "September";
-            case 10 -> "Oktober";
-            case 11 -> "November";
-            case 12 -> "Dezember";
-            default -> "";
-        };
-        int year = 2000 + calc(signal.charAt(50), signal.charAt(51), signal.charAt(52), signal.charAt(53), signal.charAt(54), signal.charAt(55), signal.charAt(56), signal.charAt(57));
+        int day = calc(signal.charAt(36), signal.charAt(37), signal.charAt(38), signal.charAt(39), signal.charAt(40), signal.charAt(41), '0', '0');
+        int intTag = calc(signal.charAt(36), signal.charAt(37), signal.charAt(38), signal.charAt(39), signal.charAt(40), signal.charAt(41), '0', '0');
+        int intMonat = calc(signal.charAt(45), signal.charAt(46), signal.charAt(47), signal.charAt(48), '0', '0', '0', '0');
+        int intJahr = calc(signal.charAt(50), signal.charAt(51), signal.charAt(52), signal.charAt(53), signal.charAt(54), signal.charAt(55), signal.charAt(56), signal.charAt(57));
+        String weekday = "";
+        switch (calc(signal.charAt(42), signal.charAt(43), signal.charAt(44), '0', '0', '0', '0', '0')){
+            case 1: weekday = "Montag"; break;
+            case 2: weekday = "Dienstag"; break;
+            case 3: weekday = "Mittwoch"; break;
+            case 4: weekday = "Donnerstag"; break;
+            case 5: weekday = "Freitag"; break;
+            case 6: weekday = "Samstag"; break;
+            case 7: weekday = "Sonntag"; break;
+        }
+        String month = "";
+        switch (calc(signal.charAt(45), signal.charAt(46), signal.charAt(47), signal.charAt(48), '0', '0', '0', '0')) {
+            case 1: month = "Januar"; break;
+            case 2: month = "Februar"; break;
+            case 3: month = "März"; break;
+            case 4: month = "April"; break;
+            case 5: month = "Mai"; break;
+            case 6: month = "Juni"; break;
+            case 7: month = "Juli"; break;
+            case 8: month = "August"; break;
+            case 9: month = "September"; break;
+            case 10: month = "Oktober"; break;
+            case 11: month = "November"; break;
+            case 12: month = "Dezember"; break;
+        }
 
-        System.out.println(weekday + ", " + day + ". " + month + " " + year + " " + hour + ":" + min + ":00 " + timezone);
+        boolean foundDate = false;
+        int year = calc(signal.charAt(50), signal.charAt(51), signal.charAt(52), signal.charAt(53), signal.charAt(54), signal.charAt(55), signal.charAt(56), signal.charAt(57));
+
+        for(int i = 0; i < 300; i += 100){
+
+            Date myDate = new Date(i + intJahr, intMonat - 1, intTag);
+
+            if(myDate.getDay() == calc(signal.charAt(42), signal.charAt(43), signal.charAt(44), '0', '0', '0', '0', '0') || (myDate.getDay() == 0 && calc(signal.charAt(42), signal.charAt(43), signal.charAt(44), '0', '0', '0', '0', '0') == 7)){
+
+                System.out.println(weekday + ", " + day + ". " + month + " " + (i + 1900 + year) + " " + hour + ":" + min + ":00 " + timezone);
+                foundDate = true;
+                break;
+
+            }
+
+        }
+
+        if(!foundDate){
+
+            System.out.println(weekday + ", " + day + ". " + month + " " + (1800 + year) + " " + hour + ":" + min + ":00 " + timezone);
+
+        }
 
     }
 
