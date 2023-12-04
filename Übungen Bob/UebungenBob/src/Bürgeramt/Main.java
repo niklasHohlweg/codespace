@@ -63,10 +63,12 @@ public class Main {
                 String name = schalter[Integer.parseInt(param)].getName();
                 String anliegen = schalter[Integer.parseInt(param)].getAnliegen();
 
-                System.out.println("DAs Anliegen " + anliegen + " von " + name + " wurde bearbeitet, Er/Sie verässt das Bürgeramt.");
+                System.out.println("Das Anliegen " + anliegen + " von " + name + " wurde bearbeitet, Er/Sie verässt das Bürgeramt.");
 
                 if(!warteschlange.isEmpty()){
                     schalter[Integer.parseInt(param)] = warteschlange.getFirst();
+                    System.out.println(warteschlange.getFirst().getName() + " geht an Schalter " + param);
+                    warteschlange.remove(warteschlange.getFirst());
                 }
                 else{
                     schalter[Integer.parseInt(param)] = null;

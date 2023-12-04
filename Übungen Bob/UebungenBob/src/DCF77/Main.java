@@ -1,5 +1,5 @@
 package DCF77;
-
+//0000000000000000001011001101011000111000110100100110011001
 import java.util.Date;
 import java.util.Scanner;
 
@@ -15,7 +15,7 @@ public class Main {
         String hour = fixNull(calc(signal.charAt(29), signal.charAt(30), signal.charAt(31), signal.charAt(32), signal.charAt(33), signal.charAt(34), '0', '0'));
         int day = calc(signal.charAt(36), signal.charAt(37), signal.charAt(38), signal.charAt(39), signal.charAt(40), signal.charAt(41), '0', '0');
         int intTag = calc(signal.charAt(36), signal.charAt(37), signal.charAt(38), signal.charAt(39), signal.charAt(40), signal.charAt(41), '0', '0');
-        int intMonat = calc(signal.charAt(45), signal.charAt(46), signal.charAt(47), signal.charAt(48), '0', '0', '0', '0');
+        int intMonat = calc(signal.charAt(45), signal.charAt(46), signal.charAt(47), signal.charAt(48), signal.charAt(49), '0', '0', '0');
         int intJahr = calc(signal.charAt(50), signal.charAt(51), signal.charAt(52), signal.charAt(53), signal.charAt(54), signal.charAt(55), signal.charAt(56), signal.charAt(57));
         String weekday = "";
         switch (calc(signal.charAt(42), signal.charAt(43), signal.charAt(44), '0', '0', '0', '0', '0')){
@@ -28,7 +28,7 @@ public class Main {
             case 7: weekday = "Sonntag"; break;
         }
         String month = "";
-        switch (calc(signal.charAt(45), signal.charAt(46), signal.charAt(47), signal.charAt(48), '0', '0', '0', '0')) {
+        switch (calc(signal.charAt(45), signal.charAt(46), signal.charAt(47), signal.charAt(48), signal.charAt(49), '0', '0', '0')) {
             case 1: month = "Januar"; break;
             case 2: month = "Februar"; break;
             case 3: month = "März"; break;
@@ -65,6 +65,8 @@ public class Main {
             System.out.println(weekday + ", " + day + ". " + month + " " + (1800 + year) + " " + hour + ":" + min + ":00 " + timezone);
 
         }
+
+        print(signal);
 
     }
 
@@ -130,6 +132,55 @@ public class Main {
 
         }
 
+    }
+
+    //0000000000000000001011001101011000111000110100100110011001
+    public static void print(String signal) {
+
+        System.out.println(" ");
+        System.out.print("Zeitzone:          " + "Bit 17: " + signal.charAt(17) + " Bit 18: " + signal.charAt(18) + " -> "); System.out.println((signal.charAt(17) == '0' && signal.charAt(18) == '1') ? "MEZ" : "MESZ");
+
+        System.out.println("----- MINUTEN -----");
+        for(int i = 21; i <= 27; i++){
+            System.out.println("Bit " + i + ": " + signal.charAt(i));
+        }
+        System.out.println("-------------------");
+        System.out.println("");
+
+        System.out.println("----- Stunde -----");
+        for(int i = 29; i <= 34; i++){
+            System.out.println("Bit " + i + ": " + signal.charAt(i));
+        }
+        System.out.println("-------------------");
+        System.out.println("");
+
+        System.out.println("----- Kalendertag -----");
+        for(int i = 36; i <= 41; i++){
+            System.out.println("Bit " + i + ": " + signal.charAt(i));
+        }
+        System.out.println("-------------------");
+        System.out.println("");
+
+        System.out.println("----- Wochentag -----");
+        for(int i = 42; i <= 44; i++){
+            System.out.println("Bit " + i + ": " + signal.charAt(i));
+        }
+        System.out.println("-------------------");
+        System.out.println("");
+
+        System.out.println("----- Monatsnummer -----");
+        for(int i = 45; i <= 49; i++){
+            System.out.println("Bit " + i + ": " + signal.charAt(i));
+        }
+        System.out.println("-------------------");
+        System.out.println("");
+
+        System.out.println("----- Jahr -----");
+        for(int i = 50; i <= 57; i++){
+            System.out.println("Bit " + i + ": " + signal.charAt(i));
+        }
+        System.out.println("-------------------");
+        System.out.println("");
     }
 
 }
